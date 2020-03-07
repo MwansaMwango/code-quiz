@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Quiz</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+ 
+   </head>
+  <body>
+    <header>
+
+        <!-- Navigation!-->
+        <nav class="navbar nav bg-success">
+            <h3><a href="highscores.html">View highscores</a></h3>
+            <h1>Code Quiz</h1>
+            <h3>Timer <span id="timeLeft"> 60 </span> secs</h3>
+        </nav>
+        
+    </header>
+    <section class="container">
+        <!-- Welcome--> 
+      <div  id="quiz-intro">
+          <h2>So you think you know Javascript?</h2>
+          <button id="start-btn">Start Quiz!</button>
+        </div>
+        <!-- Question Section-->
+        <div class="d-none" id="quiz-container">
+          <h3 id="question"></h3>
+          <div id="options">
+            <button class="d-block p-2 my-2" id="option1"></button>
+            <button class="d-block p-2 my-2" id="option2"></button>
+            <button class="d-block p-2 my-2" id="option3"></button>
+            <button class="d-block p-2 my-2" id="option4"></button>
+          </div>
+        
+          <p id="response-feedback"><br><hr></p>
+        </div>
+        <!-- All Done-->
+        <div id="all-done" class="d-none">
+         
+            <div class="form-group">
+              <label for="myInitials">Enter Initials</label>
+              <input type="text" class="form-control" id="inputInitials" placeholder="Enter initials">
+            </div>
+            <button id="submitBtn" class="btn btn-primary">Submit</button>
+
+   
+        </div>
+        <!-- High Scores-->
+        <div id="high-scores" class="d-none">
+          <h4 id="high-score-entry"></h4>
+   
+        </div>
+
+    </section>
+
+    <script>
+        
+        var quizIntroEl = document.querySelector("#quiz-intro");
+        var quizContainerEl = document.querySelector("#quiz-container");
+        var questionTitleEl = document.querySelector("#question");
+        var optionsEl = document.querySelector("#options");
+        var option1El = document.querySelector("#option1");
+        var option2El = document.querySelector("#option2");
+        var option3El = document.querySelector("#option3");
+        var option4El = document.querySelector("#option4");
+        var allDoneEl = document.querySelector("#all-done");
+        var highScoresEl= document.querySelector("#high-scores");
+        var highScores = [];
+        var submitBtnEl = document.querySelector("#submitBtn");
+        var inputInitialsText = document.querySelector("#inputInitials").value;
+
+        var responseFeedbackEl = document.querySelector("#response-feedback");
+        var questionIndex = 0;
+
+
+        var timeLeft = 60;// starts with 60 secs
+        var timeLeftEl = document.querySelector("#timeLeft");
+        var startEl = document.querySelector("#start-btn");
+        var timerRunning = false;
+
+        function startQuiz() {
+            if (timerRunning === false) {
+                timerRunning = true;
+                var timerInterval = setInterval(function() {
+                          
+                timeLeft--;
+                             
+                console.log(timeLeft);
+                timeLeftEl.textContent = timeLeft;
+                
+                if (timeLeft === 0) {
+                  clearInterval(timerInterval);
+                  // TODO Call function game over alert, goto enter initials and view high score page
+                  timerRunning = false;
+                  timeLeft = 60; //Reset timing to prevent counting into negatives
+                }
+              },1000);
+            }
+            displayQuestion();
+          }
+
+
+          function displayQuestion () {
+            quizIntroEl.remove();
+            quizContainerEl.classList.remove("d-none");
+   
+            currentQuestion = questions[questionIndex];
+            questionTitleEl.textContent = currentQuestion.questionTitle;
+            option1El.textContent = currentQuestion.option1;
+            option2El.textContent = currentQuestion.option2;
+            option3El.textContent = currentQuestion.option3;
+            option4El.textContent = currentQuestion.option4;
+
+            console.log(questionIndex);
+            
+
+ 
+          } 
+
+          optionsEl.addEventListener("click", function (e) { selectedOption(e,currentQuestion); }); 
+
+          function selectedOption(e,currentQuestion) {
+            e.preventDefault;
+            var selectedBtn = e.target;
+            questionIndex++;
+            console.log(selectedBtn);
+            console.log(currentQuestion);
+
+            if (selectedBtn.getAttribute("id") === currentQuestion.answer){
+              console.log("correct answer selected")
+              responseFeedbackEl.textContent = "Correct!"
+              setTimeout(function(){responseFeedbackEl.textContent = ""; }, 1000); //delay before removing feedback
+            } else {
+              responseFeedbackEl.textContent = "Wrong!"
+              setTimeout(function(){responseFeedbackEl.textContent = ""; }, 1000); //delay before removing feedback
+            }
+
+            if (questionIndex === questions.length) {
+              console.log("No more questions");
+              finish();
+            } else {
+            displayQuestion();
+            }
+          }
+          
+          function finish(){
+            quizContainerEl.style.display = "none";
+            allDoneEl.classList.remove("d-none");
+            submitBtnEl.addEventListener('click', function (){
+              highScores.push[inputInitialsText];
+              console.log(inputInitialsText)
+              
+            })
+            
+            console.log(inputInitialsText)
+
+          }
+
+          startEl.addEventListener("click", startQuiz);
+    
+
+
+
+          // Load questions
+          
+        var questions = [
+            {
+              questionTitle: "Inside which HTML element do we put the JavaScript?",
+              option1: "1. <js>",
+              option2: "2. <scripting>",
+              option3: "3. <javascript",
+              option4: "4. <script>",
+              answer: "option4"
+            },
+
+            {
+              questionTitle: "Where is the correct place to insert a JavaScript?",
+              option1: "1. Head",
+              option2: "2. Head and body",
+              option3: "3. Body",
+              option4: "4. Header",
+              answer: "option2"
+            },
+
+            {
+              questionTitle: "How to write an IF statement in JavaScript?",
+              option1: "1. if i == 5 then",
+              option2: "2. if i = 5 then",
+              option3: "3. if i = 5",
+              option4: "4. if ( i == 5)",
+              answer: "option1"
+            },
+
+            
+            {
+              questionTitle: "How do I write a comment in JavaScript?",
+              option1: "'This is a comment",
+              option2: "<!--This is a comment-->",
+              option3: "//This is a comment",
+              option4: "**This is a comment**",
+              answer: "option3"
+            }
+
+        ]
+
+      var currentQuestion = questions[questionIndex];
+    </script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"
+  ></script>
+  </body>
+</html>
