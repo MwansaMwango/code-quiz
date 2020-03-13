@@ -26,7 +26,6 @@ var timeLeft = 60; // starts with 60 secs
 var timerRunning = false;
 var timerPenalty = 10; // seconds to subtract from time left due to wrong answer
 
-
 // Load questions - added manually, apis can used.
 var questions = [
   {
@@ -82,15 +81,14 @@ function startQuiz() {
         finish();
       }
     }, 1000);
-  } 
+  }
   displayQuestion();
- 
 }
 
 function displayQuestion() {
   quizIntroEl.classList.remove("d-flex"); // hide intro
   quizIntroEl.classList.add("d-none"); // hide intro
-  highScoresContainerEl.classList.add("d-none") // hide scores
+  highScoresContainerEl.classList.add("d-none"); // hide scores
   quizContainerEl.classList.remove("d-none");
 
   currentQuestion = questions[questionIndex];
@@ -116,16 +114,21 @@ function selectedOption(e, currentQuestion) {
     //Check if answer is correct
     console.log("correct answer selected");
     responseFeedbackEl.textContent = "Correct!";
+    responseFeedbackEl.classList.add("bg-success");
     setTimeout(function() {
       responseFeedbackEl.textContent = "";
+      responseFeedbackEl.classList.remove("bg-success");
     }, 1000); //delay before removing feedback
   } else {
+    responseFeedbackEl.classList.add("bg-danger");
     responseFeedbackEl.textContent = "Wrong!";
+
     setTimeout(function() {
       responseFeedbackEl.textContent = "";
+      responseFeedbackEl.classList.remove("bg-danger");
     }, 1000); //delay before removing feedback
     timeLeft = timeLeft - timerPenalty; // deduct time if answer is wrong
-    console.log(timeLeft + "after wrong aswer deduction");
+    console.log(timeLeft + "after wrong answer deduction");
   }
 
   if (questionIndex === questions.length) {
@@ -144,23 +147,24 @@ function selectedOption(e, currentQuestion) {
 }
 
 function getInputValue() {
-  var inputInitialsText = document.getElementById("inputInitials").value.trim();
+  var inputInitialsText = document.getElementById("inputInitials").value.trim(); //remove spaces from value
   return inputInitialsText; // return input for value
 }
 
 function finish() {
   finalScoreEl.textContent = timeLeft;
-  quizContainerEl.classList.add("d-none");
-  allDoneEl.classList.remove("d-none");
-  
+  setTimeout(function() {
+    allDoneEl.classList.remove("d-none");
+    quizContainerEl.classList.add("d-none");
+  }, 1500); //delay required before clearing feedback for last answer
 }
 
 submitBtnEl.addEventListener("click", function() {
   var enteredInitials = getInputValue();
   highScores.push({ initials: enteredInitials, score: timeLeft }); // save player initials and final score
- 
+
   localStorage.setItem("score", JSON.stringify(highScores));
-  console.log(JSON.stringify(highScores))
+  console.log(JSON.stringify(highScores));
   timeLeft = 60; //reset index for next quiz
   questionIndex = 0; //reset index for next quiz
   viewhighScores();
@@ -195,9 +199,8 @@ highscoresBtnEl.addEventListener("click", viewhighScores);
 startEl.addEventListener("click", startQuiz);
 goBackBtnEl.addEventListener("click", reStart);
 clearScoresBtnEl.addEventListener("click", function() {
-  highScores = []
+  highScores = [];
   localStorage.setItem("score", JSON.stringify(highScores)); // clear array of high scores
   console.log(highScores);
   viewhighScores();
 });
-
