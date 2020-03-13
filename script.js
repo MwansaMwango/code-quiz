@@ -25,6 +25,7 @@ var startEl = document.querySelector("#start-btn");
 var timeLeft = 60; // starts with 60 secs
 var timerRunning = false;
 var timerPenalty = 10; // seconds to subtract from time left due to wrong answer
+// Load questions - added manually, apis can used.
 var questions = [
   {
     questionTitle: "Inside which HTML element do we put the JavaScript?",
@@ -189,7 +190,4 @@ clearScoresBtnEl.addEventListener("click", function() {
   highScores = []; // clear array of high scores
   viewhighScores();
 });
-
-// Load questions - added manually, apis can used.
-
 
