@@ -25,6 +25,8 @@ var startEl = document.querySelector("#start-btn");
 var timeLeft = 60; // starts with 60 secs
 var timerRunning = false;
 var timerPenalty = 10; // seconds to subtract from time left due to wrong answer
+
+
 // Load questions - added manually, apis can used.
 var questions = [
   {
@@ -88,6 +90,7 @@ function startQuiz() {
 function displayQuestion() {
   quizIntroEl.classList.remove("d-flex"); // hide intro
   quizIntroEl.classList.add("d-none"); // hide intro
+  highScoresContainerEl.classList.add("d-none") // hide scores
   quizContainerEl.classList.remove("d-none");
 
   currentQuestion = questions[questionIndex];
@@ -141,7 +144,7 @@ function selectedOption(e, currentQuestion) {
 }
 
 function getInputValue() {
-  var inputInitialsText = document.getElementById("inputInitials").value;
+  var inputInitialsText = document.getElementById("inputInitials").value.trim();
   return inputInitialsText; // return input for value
 }
 
@@ -154,7 +157,10 @@ function finish() {
 
 submitBtnEl.addEventListener("click", function() {
   var enteredInitials = getInputValue();
-  highScores.push({ initials: enteredInitials, score: timeLeft }); // save player initials
+  highScores.push({ initials: enteredInitials, score: timeLeft }); // save player initials and final score
+ 
+  localStorage.setItem("score", JSON.stringify(highScores));
+  console.log(JSON.stringify(highScores))
   timeLeft = 60; //reset index for next quiz
   questionIndex = 0; //reset index for next quiz
   viewhighScores();
@@ -168,7 +174,9 @@ function viewhighScores() {
   quizIntroEl.classList.add("d-none");
   quizContainerEl.classList.add("d-none");
   highScoresEl.innerHTML = ""; // clear screen, but not scores
-  highScores.forEach(element => {
+  var storedScores = JSON.parse(localStorage.getItem("score")) || [];
+  console.log(storedScores);
+  storedScores.forEach(element => {
     //display array elements
     var newInitialsEl = document.createElement("h4");
     newInitialsEl.textContent = element.initials + " - " + element.score;
@@ -187,7 +195,9 @@ highscoresBtnEl.addEventListener("click", viewhighScores);
 startEl.addEventListener("click", startQuiz);
 goBackBtnEl.addEventListener("click", reStart);
 clearScoresBtnEl.addEventListener("click", function() {
-  highScores = []; // clear array of high scores
+  highScores = []
+  localStorage.setItem("score", JSON.stringify(highScores)); // clear array of high scores
+  console.log(highScores);
   viewhighScores();
 });
 
